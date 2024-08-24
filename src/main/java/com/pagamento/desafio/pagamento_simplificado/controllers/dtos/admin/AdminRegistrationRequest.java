@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class AdminRegistrationRequest {
-    private String username;
+    private String cpf;
+    private String name;
     private String email;
     private String password;
 }

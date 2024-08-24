@@ -1,22 +1,21 @@
-package com.pagamento.desafio.pagamento_simplificado.domain.entities;
+package com.pagamento.desafio.pagamento_simplificado.entities;
 
-import com.pagamento.desafio.pagamento_simplificado.domain.Account;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
 @Entity
-@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@ToString
-public class Client extends Account {
+public class Client extends SystemUser {
 
     @Column(nullable = false, unique = true)
     private String cpf;
+
+    public Client() {
+        super.setRole("ROLE_CLIENT");
+    }
 
     @Override
     public String getIdentifier() {

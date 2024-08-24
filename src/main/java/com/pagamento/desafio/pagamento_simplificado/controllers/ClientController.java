@@ -2,7 +2,7 @@ package com.pagamento.desafio.pagamento_simplificado.controllers;
 
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.client.ClientRegistrationRequest;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.client.ClientUpdateRequest;
-import com.pagamento.desafio.pagamento_simplificado.domain.entities.Client;
+import com.pagamento.desafio.pagamento_simplificado.entities.Client;
 import com.pagamento.desafio.pagamento_simplificado.services.ClientService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +25,11 @@ public class ClientController {
 
     private final ClientService clientService;
 
-    @PostMapping("/register")
-    public ResponseEntity<String> registerClient(@RequestBody ClientRegistrationRequest clientRequest) {
+    @PostMapping
+    public ResponseEntity<Client> registerClient(@RequestBody ClientRegistrationRequest clientRequest) {
         Client client = mapToEntity(clientRequest);
-        clientService.registerClient(client);
-        return ResponseEntity.ok("Client registered successfully");
+        Client savedClient = clientService.registerClient(client);
+        return ResponseEntity.ok(savedClient);
     }
 
     @GetMapping("/{id}")
@@ -45,8 +45,8 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Client> updateClient(@PathVariable Long id, @RequestBody ClientUpdateRequest clientUpdateRequest) {
-        Client updatedClient = clientService.updateClient(id, mapToEntity(clientUpdateRequest));
+    public ResponseEntity<Client> updateClient(@PathVariable Long id, @RequestBody ClientRegistrationRequest clientRequest) {
+        Client updatedClient = clientService.updateClient(id, mapToEntity(clientRequest));
         return ResponseEntity.ok(updatedClient);
     }
 
@@ -65,19 +65,9 @@ public class ClientController {
     private Client mapToEntity(ClientRegistrationRequest clientRequest) {
         Client client = new Client();
         client.setCpf(clientRequest.getCpf());
-        client.setEmail(clientRequest.getEmail());
         client.setName(clientRequest.getName());
+        client.setEmail(clientRequest.getEmail());
         client.setPassword(clientRequest.getPassword());
-        return client;
-    }
-
-    private Client mapToEntity(ClientUpdateRequest clientUpdateRequest) {
-        Client client = new Client();
-        client.setEmail(clientUpdateRequest.getEmail());
-        client.setName(clientUpdateRequest.getName());
-        if (clientUpdateRequest.getPassword() != null) {
-            client.setPassword(clientUpdateRequest.getPassword()); // Password encoding is handled in the service layer
-        }
         return client;
     }
 }

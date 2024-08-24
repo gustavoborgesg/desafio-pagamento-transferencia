@@ -17,7 +17,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                          AuthenticationException authException) throws IOException {
 
         String path = request.getRequestURI();
-        if (path.startsWith("/authenticate")) {
+        if (path.startsWith("/authenticate") || path.startsWith("/admins")) {
             return;
         }
 

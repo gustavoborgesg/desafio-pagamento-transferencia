@@ -2,7 +2,7 @@ package com.pagamento.desafio.pagamento_simplificado.controllers;
 
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.merchant.MerchantRegistrationRequest;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.merchant.MerchantUpdateRequest;
-import com.pagamento.desafio.pagamento_simplificado.domain.entities.Merchant;
+import com.pagamento.desafio.pagamento_simplificado.entities.Merchant;
 import com.pagamento.desafio.pagamento_simplificado.services.MerchantService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +25,11 @@ public class MerchantController {
 
     private final MerchantService merchantService;
 
-    @PostMapping("/register")
-    public ResponseEntity<String> registerMerchant(@RequestBody MerchantRegistrationRequest merchantRequest) {
+    @PostMapping
+    public ResponseEntity<Merchant> registerMerchant(@RequestBody MerchantRegistrationRequest merchantRequest) {
         Merchant merchant = mapToEntity(merchantRequest);
-        merchantService.registerMerchant(merchant);
-        return ResponseEntity.ok("Merchant registered successfully");
+        Merchant savedMerchant = merchantService.registerMerchant(merchant);
+        return ResponseEntity.ok(savedMerchant);
     }
 
     @GetMapping("/{id}")
@@ -45,8 +45,8 @@ public class MerchantController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Merchant> updateMerchant(@PathVariable Long id, @RequestBody MerchantUpdateRequest merchantUpdateRequest) {
-        Merchant updatedMerchant = merchantService.updateMerchant(id, mapToEntity(merchantUpdateRequest));
+    public ResponseEntity<Merchant> updateMerchant(@PathVariable Long id, @RequestBody MerchantRegistrationRequest merchantRequest) {
+        Merchant updatedMerchant = merchantService.updateMerchant(id, mapToEntity(merchantRequest));
         return ResponseEntity.ok(updatedMerchant);
     }
 
@@ -68,16 +68,6 @@ public class MerchantController {
         merchant.setEmail(merchantRequest.getEmail());
         merchant.setName(merchantRequest.getName());
         merchant.setPassword(merchantRequest.getPassword());
-        return merchant;
-    }
-
-    private Merchant mapToEntity(MerchantUpdateRequest merchantUpdateRequest) {
-        Merchant merchant = new Merchant();
-        merchant.setEmail(merchantUpdateRequest.getEmail());
-        merchant.setName(merchantUpdateRequest.getName());
-        if (merchantUpdateRequest.getPassword() != null) {
-            merchant.setPassword(merchantUpdateRequest.getPassword()); // Password encoding is handled in the service layer
-        }
         return merchant;
     }
 }

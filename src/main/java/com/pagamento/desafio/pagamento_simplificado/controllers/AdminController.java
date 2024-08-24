@@ -2,7 +2,7 @@ package com.pagamento.desafio.pagamento_simplificado.controllers;
 
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.admin.AdminRegistrationRequest;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.admin.AdminUpdateRequest;
-import com.pagamento.desafio.pagamento_simplificado.domain.entities.Admin;
+import com.pagamento.desafio.pagamento_simplificado.entities.Admin;
 import com.pagamento.desafio.pagamento_simplificado.services.AdminService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +64,8 @@ public class AdminController {
 
     private Admin mapToEntity(AdminRegistrationRequest adminRequest) {
         Admin admin = new Admin();
-        admin.setUsername(adminRequest.getUsername());
+        admin.setCpf(adminRequest.getCpf());
+        admin.setName(adminRequest.getName());
         admin.setEmail(adminRequest.getEmail());
         admin.setPassword(adminRequest.getPassword());
         return admin;
@@ -72,8 +73,8 @@ public class AdminController {
 
     private Admin mapToEntity(AdminUpdateRequest adminUpdateRequest) {
         Admin admin = new Admin();
+        admin.setName(adminUpdateRequest.getName());
         admin.setEmail(adminUpdateRequest.getEmail());
-        admin.setUsername(adminUpdateRequest.getUsername());
         if (adminUpdateRequest.getPassword() != null) {
             admin.setPassword(adminUpdateRequest.getPassword());
         }

@@ -1,8 +1,7 @@
 package com.pagamento.desafio.pagamento_simplificado.infra.security;
 
-import com.pagamento.desafio.pagamento_simplificado.domain.entities.Admin;
-import com.pagamento.desafio.pagamento_simplificado.domain.entities.Client;
-import com.pagamento.desafio.pagamento_simplificado.domain.entities.Merchant;
+import com.pagamento.desafio.pagamento_simplificado.entities.SystemUser;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,43 +9,24 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+@AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private final String username;
-    private final String password;
-    private final Collection<? extends GrantedAuthority> authorities;
-
-    public CustomUserDetails(Admin admin) {
-        this.username = admin.getUsername();
-        this.password = admin.getPassword();
-        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-    }
-
-    public CustomUserDetails(Client client) {
-        this.username = client.getEmail();
-        this.password = client.getPassword();
-        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-    }
-
-    public CustomUserDetails(Merchant merchant) {
-        this.username = merchant.getEmail();
-        this.password = merchant.getPassword();
-        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-    }
+    private final SystemUser systemUser;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return Collections.singletonList(new SimpleGrantedAuthority(systemUser.getRole()));
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return systemUser.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return systemUser.getEmail();
     }
 
     @Override

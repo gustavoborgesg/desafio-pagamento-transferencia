@@ -1,7 +1,7 @@
 package com.pagamento.desafio.pagamento_simplificado.services;
 
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.admin.AdminUpdateRequest;
-import com.pagamento.desafio.pagamento_simplificado.domain.entities.Admin;
+import com.pagamento.desafio.pagamento_simplificado.entities.Admin;
 
 import java.util.List;
 

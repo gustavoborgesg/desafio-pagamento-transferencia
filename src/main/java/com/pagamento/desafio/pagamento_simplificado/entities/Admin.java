@@ -1,23 +1,24 @@
-package com.pagamento.desafio.pagamento_simplificado.domain.entities;
+package com.pagamento.desafio.pagamento_simplificado.entities;
 
-import com.pagamento.desafio.pagamento_simplificado.domain.Account;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Merchant extends Account {
+public class Admin extends SystemUser {
 
     @Column(nullable = false, unique = true)
-    private String cnpj;
+    private String cpf;
+
+    public Admin() {
+        super.setRole("ROLE_ADMIN"); // Automatically set the role
+    }
 
     @Override
     public String getIdentifier() {
-        return cnpj;
+        return cpf;
     }
 }

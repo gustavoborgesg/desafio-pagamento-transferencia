@@ -1,13 +1,12 @@
 package com.pagamento.desafio.pagamento_simplificado.services;
 
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.client.ClientUpdateRequest;
-import com.pagamento.desafio.pagamento_simplificado.domain.entities.Client;
+import com.pagamento.desafio.pagamento_simplificado.entities.Client;
 
 import java.util.List;
 
 public interface ClientService {
-
-    void registerClient(Client client);
+    Client registerClient(Client client);
 
     Client getClientById(Long id);
 
@@ -18,5 +17,4 @@ public interface ClientService {
     Client partialUpdateClient(Long id, ClientUpdateRequest clientUpdateRequest);
 
     void deleteClient(Long id);
-
 }
