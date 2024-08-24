@@ -26,18 +26,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String rawPassword = authentication.getCredentials().toString();
 
-        // Load the user details using the CustomUserDetailsService
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
-        // Check if the passwords match
         if (!passwordEncoder.matches(rawPassword, userDetails.getPassword())) {
             throw new BadCredentialsException("Invalid credentials");
         }
 
-        // Retrieve the user's authorities
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
 
-        // Return an authenticated token with the user's details and authorities
         return new UsernamePasswordAuthenticationToken(userDetails, rawPassword, authorities);
     }
 

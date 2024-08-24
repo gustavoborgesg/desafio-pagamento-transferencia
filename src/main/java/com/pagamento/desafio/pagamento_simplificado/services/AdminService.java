@@ -6,6 +6,7 @@ import com.pagamento.desafio.pagamento_simplificado.domain.entities.Admin;
 import java.util.List;
 
 public interface AdminService {
+
     void registerAdmin(Admin admin);
 
     Admin getAdminById(Long id);
@@ -17,4 +18,5 @@ public interface AdminService {
     Admin partialUpdateAdmin(Long id, AdminUpdateRequest adminUpdateRequest);
 
     void deleteAdmin(Long id);
+
 }

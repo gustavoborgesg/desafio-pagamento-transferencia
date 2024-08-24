@@ -6,6 +6,7 @@ import com.pagamento.desafio.pagamento_simplificado.domain.entities.Merchant;
 import java.util.List;
 
 public interface MerchantService {
+
     void registerMerchant(Merchant merchant);
 
     Merchant getMerchantById(Long id);
@@ -17,4 +18,5 @@ public interface MerchantService {
     Merchant partialUpdateMerchant(Long id, MerchantUpdateRequest merchantUpdateRequest);
 
     void deleteMerchant(Long id);
+
 }

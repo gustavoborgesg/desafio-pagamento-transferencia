@@ -10,14 +10,15 @@ import java.io.IOException;
 
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
 
         String path = request.getRequestURI();
-        if (path.startsWith("/authenticate") || path.startsWith("/register")) {
-            return;  // Skip sending the error, as these should be publicly accessible
+        if (path.startsWith("/authenticate")) {
+            return;
         }
 
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: Invalid or missing token");

@@ -14,7 +14,8 @@ import java.util.Date;
 
 @Component
 public class JwtTokenUtil {
-    private static final int TOKEN_VALIDITY = 3600 * 5; // 5 hours
+
+    private static final int TOKEN_VALIDITY = 3600 * 2; // 2 hours
     private static final String SECRET_KEY = "your_secret_key_here";
     private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET_KEY);
 

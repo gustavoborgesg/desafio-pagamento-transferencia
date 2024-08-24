@@ -6,6 +6,7 @@ import com.pagamento.desafio.pagamento_simplificado.domain.entities.Client;
 import java.util.List;
 
 public interface ClientService {
+
     void registerClient(Client client);
 
     Client getClientById(Long id);
@@ -17,4 +18,5 @@ public interface ClientService {
     Client partialUpdateClient(Long id, ClientUpdateRequest clientUpdateRequest);
 
     void deleteClient(Long id);
+
 }

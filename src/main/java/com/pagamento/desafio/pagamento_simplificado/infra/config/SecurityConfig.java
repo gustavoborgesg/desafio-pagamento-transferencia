@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig {
+
     private final SecurityFilterConfig securityFilterConfig;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
@@ -40,9 +40,6 @@ public class SecurityConfig {
                         .requestMatchers("/authenticate", "/admins/**").permitAll()
                         .requestMatchers("/clients/**", "/merchants/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
-                )
-                .headers(headers -> headers
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)  // Enable access to H2 console frames
                 )
                 .addFilterBefore(securityFilterConfig, UsernamePasswordAuthenticationFilter.class)
                 .build();
