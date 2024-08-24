@@ -2,6 +2,7 @@ package com.pagamento.desafio.pagamento_simplificado.infra.security;
 
 import com.pagamento.desafio.pagamento_simplificado.domain.entities.Client;
 import com.pagamento.desafio.pagamento_simplificado.domain.entities.Merchant;
+import com.pagamento.desafio.pagamento_simplificado.exception.auth.UserNotFoundException;
 import com.pagamento.desafio.pagamento_simplificado.repositories.ClientRepository;
 import com.pagamento.desafio.pagamento_simplificado.repositories.MerchantRepository;
 import lombok.AllArgsConstructor;
@@ -14,25 +15,21 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private ClientRepository clientRepository;
-    private MerchantRepository merchantRepository;
+    private final ClientRepository clientRepository;
+    private final MerchantRepository merchantRepository;
 
     @Override
-    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Client client = clientRepository.findByEmail(username)
-                .orElse(null);
+                .orElseThrow(() -> new UserNotFoundException("Client with email " + username + " not found."));
 
         if (client != null) {
             return new CustomUserDetails(client);
         }
 
         Merchant merchant = merchantRepository.findByEmail(username)
-                .orElse(null);
+                .orElseThrow(() -> new UserNotFoundException("Merchant with email " + username + " not found."));
 
-        if (merchant != null) {
-            return new CustomUserDetails(merchant);
-        }
-
-        throw new UsernameNotFoundException("User not found with email: " + username);
+        return new CustomUserDetails(merchant);
     }
 }

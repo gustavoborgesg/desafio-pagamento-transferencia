@@ -1,7 +1,7 @@
 package com.pagamento.desafio.pagamento_simplificado.infra.config;
 
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.pagamento.desafio.pagamento_simplificado.exception.auth.JwtException;
 import com.pagamento.desafio.pagamento_simplificado.infra.security.CustomUserDetailsService;
 import com.pagamento.desafio.pagamento_simplificado.infra.security.JwtTokenUtil;
 import jakarta.servlet.FilterChain;
@@ -35,7 +35,6 @@ public class SecurityFilterConfig extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-        System.out.println("TESTE: " + requestURI);
 
         final String requestTokenHeader = request.getHeader("Authorization");
 
@@ -47,18 +46,8 @@ public class SecurityFilterConfig extends OncePerRequestFilter {
 
             try {
                 username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-            } catch (JWTDecodeException e) {
-                System.out.println("Unable to decode JWT Token");
-
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
-                chain.doFilter(request, response);
-                return;
             } catch (JWTVerificationException e) {
-                System.out.println("JWT Token verification failed: " + e.getMessage());
-
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT token verification failed");
-                chain.doFilter(request, response);
-                return;
+                throw new JwtException("JWT Token verification failed: " + e.getMessage());
             }
         } else {
             logger.warn("JWT Token does not begin with Bearer String");

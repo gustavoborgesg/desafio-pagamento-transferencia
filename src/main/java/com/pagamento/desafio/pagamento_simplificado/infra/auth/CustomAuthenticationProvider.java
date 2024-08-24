@@ -1,6 +1,5 @@
 package com.pagamento.desafio.pagamento_simplificado.infra.auth;
 
-import com.pagamento.desafio.pagamento_simplificado.infra.security.CustomUserDetails;
 import com.pagamento.desafio.pagamento_simplificado.infra.security.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -9,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -27,18 +27,18 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String rawPassword = authentication.getCredentials().toString();
 
         // Load the user details using the CustomUserDetailsService
-        CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(username);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
         // Check if the passwords match
-        if (!passwordEncoder.matches(rawPassword, customUserDetails.getPassword())) {
+        if (!passwordEncoder.matches(rawPassword, userDetails.getPassword())) {
             throw new BadCredentialsException("Invalid credentials");
         }
 
         // Retrieve the user's authorities
-        Collection<? extends GrantedAuthority> authorities = customUserDetails.getAuthorities();
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
 
         // Return an authenticated token with the user's details and authorities
-        return new UsernamePasswordAuthenticationToken(customUserDetails, rawPassword, authorities);
+        return new UsernamePasswordAuthenticationToken(userDetails, rawPassword, authorities);
     }
 
     @Override

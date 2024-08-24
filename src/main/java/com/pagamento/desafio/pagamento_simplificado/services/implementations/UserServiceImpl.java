@@ -4,6 +4,8 @@ import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.ClientRegis
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.MerchantRegistrationRequest;
 import com.pagamento.desafio.pagamento_simplificado.domain.entities.Client;
 import com.pagamento.desafio.pagamento_simplificado.domain.entities.Merchant;
+import com.pagamento.desafio.pagamento_simplificado.exception.auth.UserAlreadyExistsException;
+import com.pagamento.desafio.pagamento_simplificado.exception.auth.UserNotFoundException;
 import com.pagamento.desafio.pagamento_simplificado.repositories.ClientRepository;
 import com.pagamento.desafio.pagamento_simplificado.repositories.MerchantRepository;
 import com.pagamento.desafio.pagamento_simplificado.services.UserService;
@@ -14,12 +16,17 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final ClientRepository clientRepository;
     private final MerchantRepository merchantRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public void registerClient(ClientRegistrationRequest clientRequest) {
+        if (clientRepository.findByEmail(clientRequest.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("Client with email " + clientRequest.getEmail() + " already exists.");
+        }
+
         Client client = new Client();
         client.setCpf(clientRequest.getCpf());
         client.setEmail(clientRequest.getEmail());
@@ -30,11 +37,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerMerchant(MerchantRegistrationRequest merchantRequest) {
+        if (merchantRepository.findByEmail(merchantRequest.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("Merchant with email " + merchantRequest.getEmail() + " already exists.");
+        }
+
         Merchant merchant = new Merchant();
         merchant.setCnpj(merchantRequest.getCnpj());
         merchant.setEmail(merchantRequest.getEmail());
         merchant.setName(merchantRequest.getName());
         merchant.setPassword(passwordEncoder.encode(merchantRequest.getPassword()));
         merchantRepository.save(merchant);
+    }
+
+    public Client findClientByEmail(String email) {
+        return clientRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("Client with email " + email + " not found."));
     }
 }

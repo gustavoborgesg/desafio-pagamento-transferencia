@@ -4,8 +4,7 @@ import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.Authenticat
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.AuthenticationResponse;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.ClientRegistrationRequest;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.MerchantRegistrationRequest;
-import com.pagamento.desafio.pagamento_simplificado.domain.entities.Client;
-import com.pagamento.desafio.pagamento_simplificado.domain.entities.Merchant;
+import com.pagamento.desafio.pagamento_simplificado.exception.auth.InvalidCredentialsException;
 import com.pagamento.desafio.pagamento_simplificado.infra.security.CustomUserDetails;
 import com.pagamento.desafio.pagamento_simplificado.infra.security.JwtTokenUtil;
 import com.pagamento.desafio.pagamento_simplificado.services.UserService;
@@ -40,12 +39,16 @@ public class AuthController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> loginUser(@RequestBody AuthenticationRequest authenticationRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
-        );
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
+            );
 
-        String jwt = jwtTokenUtil.generateToken((CustomUserDetails) authentication.getPrincipal());
+            String jwt = jwtTokenUtil.generateToken((CustomUserDetails) authentication.getPrincipal());
 
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+            return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        } catch (Exception e) {
+            throw new InvalidCredentialsException("Invalid username or password.");
+        }
     }
 }

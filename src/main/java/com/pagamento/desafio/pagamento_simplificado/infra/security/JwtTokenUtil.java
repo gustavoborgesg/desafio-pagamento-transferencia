@@ -6,20 +6,21 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import com.pagamento.desafio.pagamento_simplificado.exception.auth.JwtException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-@Service
+@Component
 public class JwtTokenUtil {
-    private static final int TOKEN_VALIDITY = 3600 * 5; // 1 hour
+    private static final int TOKEN_VALIDITY = 3600 * 5; // 5 hours
     private static final String SECRET_KEY = "your_secret_key_here";
     private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET_KEY);
 
-    public String generateToken(CustomUserDetails customUserDetails) {
+    public String generateToken(UserDetails userDetails) {
         return JWT.create()
-                .withSubject(customUserDetails.getUsername())
+                .withSubject(userDetails.getUsername())
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .withExpiresAt(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
                 .sign(ALGORITHM);
@@ -27,10 +28,11 @@ public class JwtTokenUtil {
 
     public boolean validateToken(String token, UserDetails userDetails) {
         try {
-            String username = getUsernameFromToken(token);
-            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+            DecodedJWT decodedJWT = verifyToken(token);
+            String username = decodedJWT.getSubject();
+            return username.equals(userDetails.getUsername()) && !isTokenExpired(decodedJWT);
         } catch (JWTVerificationException e) {
-            return false;
+            throw new JwtException("JWT Token verification failed: " + e.getMessage());
         }
     }
 
@@ -39,21 +41,16 @@ public class JwtTokenUtil {
             DecodedJWT decodedJWT = JWT.decode(token);
             return decodedJWT.getSubject();
         } catch (JWTDecodeException e) {
-            throw new JWTDecodeException("Error decoding JWT token");
+            throw new JwtException("Error decoding JWT token");
         }
     }
 
-    private boolean isTokenExpired(String token) {
-        try {
-            DecodedJWT decodedJWT = JWT.decode(token);
-            return decodedJWT.getExpiresAt().before(new Date());
-        } catch (JWTDecodeException e) {
-            throw new JWTDecodeException("Error decoding JWT token");
-        }
+    private boolean isTokenExpired(DecodedJWT decodedJWT) {
+        return decodedJWT.getExpiresAt().before(new Date());
     }
 
-    private void verifyToken(String token) {
+    private DecodedJWT verifyToken(String token) throws JWTVerificationException {
         JWTVerifier verifier = JWT.require(ALGORITHM).build();
-        verifier.verify(token);
+        return verifier.verify(token);
     }
 }
