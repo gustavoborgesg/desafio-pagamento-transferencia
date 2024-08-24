@@ -1,7 +1,7 @@
 package com.pagamento.desafio.pagamento_simplificado.infra.config;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.pagamento.desafio.pagamento_simplificado.exception.auth.JwtException;
+import com.pagamento.desafio.pagamento_simplificado.exceptions.auth.JwtException;
 import com.pagamento.desafio.pagamento_simplificado.infra.security.CustomUserDetailsService;
 import com.pagamento.desafio.pagamento_simplificado.infra.security.JwtTokenUtil;
 import jakarta.servlet.FilterChain;

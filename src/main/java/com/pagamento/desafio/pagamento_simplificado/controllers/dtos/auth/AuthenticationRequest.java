@@ -1,4 +1,4 @@
-package com.pagamento.desafio.pagamento_simplificado.controllers.dtos;
+package com.pagamento.desafio.pagamento_simplificado.controllers.dtos.auth;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
-package com.pagamento.desafio.pagamento_simplificado.exception.auth;
+package com.pagamento.desafio.pagamento_simplificado.exceptions.auth;
 
-import com.pagamento.desafio.pagamento_simplificado.exception.CustomException;
+import com.pagamento.desafio.pagamento_simplificado.exceptions.CustomException;
 import org.springframework.http.HttpStatus;
 
 public class InvalidCredentialsException extends CustomException {

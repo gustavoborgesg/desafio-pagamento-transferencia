@@ -1,4 +1,4 @@
-package com.pagamento.desafio.pagamento_simplificado.exception;
+package com.pagamento.desafio.pagamento_simplificado.exceptions;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

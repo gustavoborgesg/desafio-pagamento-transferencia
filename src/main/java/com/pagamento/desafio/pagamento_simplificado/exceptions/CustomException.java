@@ -1,4 +1,4 @@
-package com.pagamento.desafio.pagamento_simplificado.exception;
+package com.pagamento.desafio.pagamento_simplificado.exceptions;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
