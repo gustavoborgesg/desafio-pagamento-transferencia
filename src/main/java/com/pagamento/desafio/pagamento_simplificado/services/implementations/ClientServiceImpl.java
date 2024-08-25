@@ -40,9 +40,9 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client updateClient(Long id, Client updatedClient) {
         Client existingClient = getClientById(id);
-        existingClient.setEmail(updatedClient.getEmail());
-        existingClient.setName(updatedClient.getName());
         existingClient.setCpf(updatedClient.getCpf());
+        existingClient.setName(updatedClient.getName());
+        existingClient.setEmail(updatedClient.getEmail());
 
         if (updatedClient.getPassword() != null) {
             existingClient.setPassword(passwordEncoder.encode(updatedClient.getPassword()));

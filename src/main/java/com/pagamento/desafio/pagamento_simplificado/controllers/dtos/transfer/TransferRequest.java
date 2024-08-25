@@ -8,5 +8,5 @@ import java.math.BigDecimal;
 public class TransferRequest {
     private Long payerId;
     private Long payeeId;
-    private BigDecimal amount;
+    private BigDecimal value;
 }

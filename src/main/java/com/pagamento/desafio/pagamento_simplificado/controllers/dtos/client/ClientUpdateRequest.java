@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ClientUpdateRequest {
-    private String email;
     private String name;
+    private String email;
     private String password;
 }

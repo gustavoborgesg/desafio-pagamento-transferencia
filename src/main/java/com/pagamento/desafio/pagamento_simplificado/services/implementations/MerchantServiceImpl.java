@@ -40,14 +40,32 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public Merchant updateMerchant(Long id, Merchant updatedMerchant) {
         Merchant existingMerchant = getMerchantById(id);
-        updateMerchantFields(existingMerchant, updatedMerchant);
+
+        existingMerchant.setName(updatedMerchant.getName());
+        existingMerchant.setEmail(updatedMerchant.getEmail());
+        existingMerchant.setCnpj(updatedMerchant.getCnpj());
+
+        if (updatedMerchant.getPassword() != null) {
+            existingMerchant.setPassword(passwordEncoder.encode(updatedMerchant.getPassword()));
+        }
+
         return merchantRepository.save(existingMerchant);
     }
 
     @Override
     public Merchant partialUpdateMerchant(Long id, MerchantUpdateRequest merchantUpdateRequest) {
         Merchant existingMerchant = getMerchantById(id);
-        updateMerchantFields(existingMerchant, merchantUpdateRequest);
+
+        if (merchantUpdateRequest.getEmail() != null) {
+            existingMerchant.setEmail(merchantUpdateRequest.getEmail());
+        }
+        if (merchantUpdateRequest.getName() != null) {
+            existingMerchant.setName(merchantUpdateRequest.getName());
+        }
+        if (merchantUpdateRequest.getPassword() != null) {
+            existingMerchant.setPassword(passwordEncoder.encode(merchantUpdateRequest.getPassword()));
+        }
+
         return merchantRepository.save(existingMerchant);
     }
 
@@ -63,27 +81,6 @@ public class MerchantServiceImpl implements MerchantService {
         }
         if (merchantRepository.findByCnpj(merchant.getCnpj()).isPresent()) {
             throw new MerchantAlreadyExistsException("Merchant with CNPJ " + merchant.getCnpj() + " already exists.");
-        }
-    }
-
-    private void updateMerchantFields(Merchant existingMerchant, Merchant updatedMerchant) {
-        existingMerchant.setEmail(updatedMerchant.getEmail());
-        existingMerchant.setName(updatedMerchant.getName());
-        existingMerchant.setCnpj(updatedMerchant.getCnpj());
-        if (updatedMerchant.getPassword() != null) {
-            existingMerchant.setPassword(passwordEncoder.encode(updatedMerchant.getPassword()));
-        }
-    }
-
-    private void updateMerchantFields(Merchant existingMerchant, MerchantUpdateRequest updateRequest) {
-        if (updateRequest.getEmail() != null) {
-            existingMerchant.setEmail(updateRequest.getEmail());
-        }
-        if (updateRequest.getName() != null) {
-            existingMerchant.setName(updateRequest.getName());
-        }
-        if (updateRequest.getPassword() != null) {
-            existingMerchant.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
         }
     }
 }
