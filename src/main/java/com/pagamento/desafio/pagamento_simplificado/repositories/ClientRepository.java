@@ -1,6 +1,6 @@
 package com.pagamento.desafio.pagamento_simplificado.repositories;
 
-import com.pagamento.desafio.pagamento_simplificado.entities.Client;
+import com.pagamento.desafio.pagamento_simplificado.domain.entities.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -2,8 +2,8 @@ package com.pagamento.desafio.pagamento_simplificado.controllers;
 
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.client.ClientRegistrationRequest;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.client.ClientUpdateRequest;
-import com.pagamento.desafio.pagamento_simplificado.entities.Client;
-import com.pagamento.desafio.pagamento_simplificado.services.ClientService;
+import com.pagamento.desafio.pagamento_simplificado.domain.entities.Client;
+import com.pagamento.desafio.pagamento_simplificado.domain.services.ClientService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -68,6 +68,7 @@ public class ClientController {
         client.setName(clientRequest.getName());
         client.setEmail(clientRequest.getEmail());
         client.setPassword(clientRequest.getPassword());
+        client.getWallet().setBalance(clientRequest.getInitialBalance());
         return client;
     }
 }

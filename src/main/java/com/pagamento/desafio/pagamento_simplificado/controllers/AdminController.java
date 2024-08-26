@@ -2,8 +2,8 @@ package com.pagamento.desafio.pagamento_simplificado.controllers;
 
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.admin.AdminRegistrationRequest;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.admin.AdminUpdateRequest;
-import com.pagamento.desafio.pagamento_simplificado.entities.Admin;
-import com.pagamento.desafio.pagamento_simplificado.services.AdminService;
+import com.pagamento.desafio.pagamento_simplificado.domain.entities.Admin;
+import com.pagamento.desafio.pagamento_simplificado.domain.services.AdminService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

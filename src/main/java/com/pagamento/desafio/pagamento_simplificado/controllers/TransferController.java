@@ -1,8 +1,8 @@
 package com.pagamento.desafio.pagamento_simplificado.controllers;
 
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.transfer.TransferRequest;
-import com.pagamento.desafio.pagamento_simplificado.entities.Transfer;
-import com.pagamento.desafio.pagamento_simplificado.services.TransferService;
+import com.pagamento.desafio.pagamento_simplificado.domain.entities.Transfer;
+import com.pagamento.desafio.pagamento_simplificado.domain.services.TransferService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

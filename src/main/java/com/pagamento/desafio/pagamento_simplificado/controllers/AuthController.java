@@ -2,7 +2,7 @@ package com.pagamento.desafio.pagamento_simplificado.controllers;
 
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.auth.AuthenticationRequest;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.auth.AuthenticationResponse;
-import com.pagamento.desafio.pagamento_simplificado.exceptions.auth.InvalidCredentialsException;
+import com.pagamento.desafio.pagamento_simplificado.domain.exceptions.auth.InvalidCredentialsException;
 import com.pagamento.desafio.pagamento_simplificado.infra.security.CustomUserDetails;
 import com.pagamento.desafio.pagamento_simplificado.infra.security.JwtTokenUtil;
 import lombok.AllArgsConstructor;

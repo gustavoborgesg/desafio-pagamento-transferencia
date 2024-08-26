@@ -2,8 +2,8 @@ package com.pagamento.desafio.pagamento_simplificado.controllers;
 
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.merchant.MerchantRegistrationRequest;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.merchant.MerchantUpdateRequest;
-import com.pagamento.desafio.pagamento_simplificado.entities.Merchant;
-import com.pagamento.desafio.pagamento_simplificado.services.MerchantService;
+import com.pagamento.desafio.pagamento_simplificado.domain.entities.Merchant;
+import com.pagamento.desafio.pagamento_simplificado.domain.services.MerchantService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -65,9 +65,10 @@ public class MerchantController {
     private Merchant mapToEntity(MerchantRegistrationRequest merchantRequest) {
         Merchant merchant = new Merchant();
         merchant.setCnpj(merchantRequest.getCnpj());
-        merchant.setEmail(merchantRequest.getEmail());
         merchant.setName(merchantRequest.getName());
+        merchant.setEmail(merchantRequest.getEmail());
         merchant.setPassword(merchantRequest.getPassword());
+        merchant.getWallet().credit(merchantRequest.getInitialBalance());
         return merchant;
     }
 }

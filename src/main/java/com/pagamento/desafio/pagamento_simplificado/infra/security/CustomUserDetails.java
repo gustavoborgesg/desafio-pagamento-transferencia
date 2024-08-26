@@ -1,6 +1,6 @@
 package com.pagamento.desafio.pagamento_simplificado.infra.security;
 
-import com.pagamento.desafio.pagamento_simplificado.entities.SystemUser;
+import com.pagamento.desafio.pagamento_simplificado.domain.entities.UserAccount;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,21 +12,21 @@ import java.util.Collections;
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private final SystemUser systemUser;
+    private final UserAccount userAccount;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(systemUser.getRole()));
+        return Collections.singletonList(new SimpleGrantedAuthority(userAccount.getRole()));
     }
 
     @Override
     public String getPassword() {
-        return systemUser.getPassword();
+        return userAccount.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return systemUser.getEmail();
+        return userAccount.getEmail();
     }
 
     @Override

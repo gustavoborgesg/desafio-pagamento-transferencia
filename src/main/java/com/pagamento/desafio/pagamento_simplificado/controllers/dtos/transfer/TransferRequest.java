@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 @Data
 public class TransferRequest {
-    private Long payerId;
-    private Long payeeId;
+    private Long payer;
+    private Long payee;
     private BigDecimal value;
 }
