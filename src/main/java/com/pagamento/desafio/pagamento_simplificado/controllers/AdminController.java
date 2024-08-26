@@ -1,5 +1,6 @@
 package com.pagamento.desafio.pagamento_simplificado.controllers;
 
+import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.admin.AdminDefaultResponse;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.admin.AdminRegistrationRequest;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.admin.AdminUpdateRequest;
 import com.pagamento.desafio.pagamento_simplificado.domain.entities.Admin;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -33,27 +35,29 @@ public class AdminController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Admin> getAdminById(@PathVariable Long id) {
+    public ResponseEntity<AdminDefaultResponse> getAdminById(@PathVariable Long id) {
         Admin admin = adminService.getAdminById(id);
-        return ResponseEntity.ok(admin);
+        return ResponseEntity.ok(mapToResponse(admin));
     }
 
     @GetMapping
-    public ResponseEntity<List<Admin>> getAllAdmins() {
-        List<Admin> admins = adminService.getAllAdmins();
+    public ResponseEntity<List<AdminDefaultResponse>> getAllAdmins() {
+        List<AdminDefaultResponse> admins = adminService.getAllAdmins().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(admins);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Admin> updateAdmin(@PathVariable Long id, @RequestBody AdminUpdateRequest adminUpdateRequest) {
+    public ResponseEntity<AdminDefaultResponse> updateAdmin(@PathVariable Long id, @RequestBody AdminUpdateRequest adminUpdateRequest) {
         Admin updatedAdmin = adminService.updateAdmin(id, mapToEntity(adminUpdateRequest));
-        return ResponseEntity.ok(updatedAdmin);
+        return ResponseEntity.ok(mapToResponse(updatedAdmin));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Admin> partialUpdateAdmin(@PathVariable Long id, @RequestBody AdminUpdateRequest adminUpdateRequest) {
+    public ResponseEntity<AdminDefaultResponse> partialUpdateAdmin(@PathVariable Long id, @RequestBody AdminUpdateRequest adminUpdateRequest) {
         Admin updatedAdmin = adminService.partialUpdateAdmin(id, adminUpdateRequest);
-        return ResponseEntity.ok(updatedAdmin);
+        return ResponseEntity.ok(mapToResponse(updatedAdmin));
     }
 
     @DeleteMapping("/{id}")
@@ -79,5 +83,13 @@ public class AdminController {
             admin.setPassword(adminUpdateRequest.getPassword());
         }
         return admin;
+    }
+
+    private AdminDefaultResponse mapToResponse(Admin admin) {
+        AdminDefaultResponse response = new AdminDefaultResponse();
+        response.setId(admin.getId());
+        response.setName(admin.getName());
+        response.setEmail(admin.getEmail());
+        return response;
     }
 }

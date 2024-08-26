@@ -1,5 +1,6 @@
 package com.pagamento.desafio.pagamento_simplificado.controllers;
 
+import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.client.ClientDefaultResponse;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.client.ClientRegistrationRequest;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.client.ClientUpdateRequest;
 import com.pagamento.desafio.pagamento_simplificado.domain.entities.Client;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -26,34 +28,36 @@ public class ClientController {
     private final ClientService clientService;
 
     @PostMapping
-    public ResponseEntity<Client> registerClient(@RequestBody ClientRegistrationRequest clientRequest) {
+    public ResponseEntity<ClientDefaultResponse> registerClient(@RequestBody ClientRegistrationRequest clientRequest) {
         Client client = mapToEntity(clientRequest);
         Client savedClient = clientService.registerClient(client);
-        return ResponseEntity.ok(savedClient);
+        return ResponseEntity.ok(mapToResponse(savedClient));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Client> getClientById(@PathVariable Long id) {
+    public ResponseEntity<ClientDefaultResponse> getClientById(@PathVariable Long id) {
         Client client = clientService.getClientById(id);
-        return ResponseEntity.ok(client);
+        return ResponseEntity.ok(mapToResponse(client));
     }
 
     @GetMapping
-    public ResponseEntity<List<Client>> getAllClients() {
-        List<Client> clients = clientService.getAllClients();
+    public ResponseEntity<List<ClientDefaultResponse>> getAllClients() {
+        List<ClientDefaultResponse> clients = clientService.getAllClients().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(clients);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Client> updateClient(@PathVariable Long id, @RequestBody ClientRegistrationRequest clientRequest) {
+    public ResponseEntity<ClientDefaultResponse> updateClient(@PathVariable Long id, @RequestBody ClientRegistrationRequest clientRequest) {
         Client updatedClient = clientService.updateClient(id, mapToEntity(clientRequest));
-        return ResponseEntity.ok(updatedClient);
+        return ResponseEntity.ok(mapToResponse(updatedClient));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Client> partialUpdateClient(@PathVariable Long id, @RequestBody ClientUpdateRequest clientUpdateRequest) {
+    public ResponseEntity<ClientDefaultResponse> partialUpdateClient(@PathVariable Long id, @RequestBody ClientUpdateRequest clientUpdateRequest) {
         Client updatedClient = clientService.partialUpdateClient(id, clientUpdateRequest);
-        return ResponseEntity.ok(updatedClient);
+        return ResponseEntity.ok(mapToResponse(updatedClient));
     }
 
     @DeleteMapping("/{id}")
@@ -70,5 +74,15 @@ public class ClientController {
         client.setPassword(clientRequest.getPassword());
         client.getWallet().setBalance(clientRequest.getInitialBalance());
         return client;
+    }
+
+    private ClientDefaultResponse mapToResponse(Client client) {
+        ClientDefaultResponse response = new ClientDefaultResponse();
+        response.setId(client.getId());
+        response.setCpf(client.getCpf());
+        response.setName(client.getName());
+        response.setEmail(client.getEmail());
+        response.setBalance(client.getWallet().getBalance());
+        return response;
     }
 }

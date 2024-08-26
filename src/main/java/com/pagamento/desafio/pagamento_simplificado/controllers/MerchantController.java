@@ -1,5 +1,6 @@
 package com.pagamento.desafio.pagamento_simplificado.controllers;
 
+import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.merchant.MerchantDefaultResponse;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.merchant.MerchantRegistrationRequest;
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.merchant.MerchantUpdateRequest;
 import com.pagamento.desafio.pagamento_simplificado.domain.entities.Merchant;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -26,34 +28,36 @@ public class MerchantController {
     private final MerchantService merchantService;
 
     @PostMapping
-    public ResponseEntity<Merchant> registerMerchant(@RequestBody MerchantRegistrationRequest merchantRequest) {
+    public ResponseEntity<MerchantDefaultResponse> registerMerchant(@RequestBody MerchantRegistrationRequest merchantRequest) {
         Merchant merchant = mapToEntity(merchantRequest);
         Merchant savedMerchant = merchantService.registerMerchant(merchant);
-        return ResponseEntity.ok(savedMerchant);
+        return ResponseEntity.ok(mapToResponse(savedMerchant));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Merchant> getMerchantById(@PathVariable Long id) {
+    public ResponseEntity<MerchantDefaultResponse> getMerchantById(@PathVariable Long id) {
         Merchant merchant = merchantService.getMerchantById(id);
-        return ResponseEntity.ok(merchant);
+        return ResponseEntity.ok(mapToResponse(merchant));
     }
 
     @GetMapping
-    public ResponseEntity<List<Merchant>> getAllMerchants() {
-        List<Merchant> merchants = merchantService.getAllMerchants();
+    public ResponseEntity<List<MerchantDefaultResponse>> getAllMerchants() {
+        List<MerchantDefaultResponse> merchants = merchantService.getAllMerchants().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(merchants);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Merchant> updateMerchant(@PathVariable Long id, @RequestBody MerchantRegistrationRequest merchantRequest) {
+    public ResponseEntity<MerchantDefaultResponse> updateMerchant(@PathVariable Long id, @RequestBody MerchantRegistrationRequest merchantRequest) {
         Merchant updatedMerchant = merchantService.updateMerchant(id, mapToEntity(merchantRequest));
-        return ResponseEntity.ok(updatedMerchant);
+        return ResponseEntity.ok(mapToResponse(updatedMerchant));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Merchant> partialUpdateMerchant(@PathVariable Long id, @RequestBody MerchantUpdateRequest merchantUpdateRequest) {
+    public ResponseEntity<MerchantDefaultResponse> partialUpdateMerchant(@PathVariable Long id, @RequestBody MerchantUpdateRequest merchantUpdateRequest) {
         Merchant updatedMerchant = merchantService.partialUpdateMerchant(id, merchantUpdateRequest);
-        return ResponseEntity.ok(updatedMerchant);
+        return ResponseEntity.ok(mapToResponse(updatedMerchant));
     }
 
     @DeleteMapping("/{id}")
@@ -68,7 +72,17 @@ public class MerchantController {
         merchant.setName(merchantRequest.getName());
         merchant.setEmail(merchantRequest.getEmail());
         merchant.setPassword(merchantRequest.getPassword());
-        merchant.getWallet().credit(merchantRequest.getInitialBalance());
+        merchant.getWallet().setBalance(merchantRequest.getInitialBalance());
         return merchant;
+    }
+
+    private MerchantDefaultResponse mapToResponse(Merchant merchant) {
+        MerchantDefaultResponse response = new MerchantDefaultResponse();
+        response.setId(merchant.getId());
+        response.setCnpj(merchant.getCnpj());
+        response.setName(merchant.getName());
+        response.setEmail(merchant.getEmail());
+        response.setBalance(merchant.getWallet().getBalance());
+        return response;
     }
 }

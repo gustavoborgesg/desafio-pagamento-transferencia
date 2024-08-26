@@ -1,7 +1,6 @@
 package com.pagamento.desafio.pagamento_simplificado.controllers;
 
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.deposit.DepositRequest;
-import com.pagamento.desafio.pagamento_simplificado.domain.entities.UserAccount;
 import com.pagamento.desafio.pagamento_simplificado.domain.services.UserAccountService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,8 @@ public class UserAccountController {
     private final UserAccountService userAccountService;
 
     @PostMapping("/deposit")
-    public ResponseEntity<UserAccount> depositToWallet(@RequestBody DepositRequest depositRequest) {
-        UserAccount updatedUser = userAccountService.depositToWallet(depositRequest.getUserId(), depositRequest.getAmount());
-        return ResponseEntity.ok(updatedUser);
+    public ResponseEntity<String> depositToWallet(@RequestBody DepositRequest depositRequest) {
+        userAccountService.depositToWallet(depositRequest.getUserId(), depositRequest.getAmount());
+        return ResponseEntity.ok("Deposit successful");
     }
 }

@@ -16,10 +16,10 @@ public class UserAccountServiceImpl implements UserAccountService {
     private final UserAccountRepository userAccountRepository;
 
     @Override
-    public UserAccount depositToWallet(Long userId, BigDecimal amount) {
+    public void depositToWallet(Long userId, BigDecimal amount) {
         UserAccount user = userAccountRepository.findById(userId)
                 .orElseThrow(() -> new UserAccountNotFoundException("User with id " + userId + " not found."));
         user.getWallet().credit(amount);
-        return userAccountRepository.save(user);
+        userAccountRepository.save(user);
     }
 }

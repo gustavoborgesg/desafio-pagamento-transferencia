@@ -15,9 +15,13 @@ import com.pagamento.desafio.pagamento_simplificado.external.exceptions.notifica
 import com.pagamento.desafio.pagamento_simplificado.repositories.TransferRepository;
 import com.pagamento.desafio.pagamento_simplificado.repositories.UserAccountRepository;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
@@ -33,6 +37,8 @@ public class TransferServiceImpl implements TransferService {
     private final RestClient restClient = RestClient.create();
     private final String AUTHORIZATION_URL = "https://util.devi.tools/api/v2/authorize";
     private final String NOTIFICATION_URL = "https://util.devi.tools/api/v1/notify";
+
+    private static final Logger logger = LoggerFactory.getLogger(TransferServiceImpl.class);
 
     @Override
     @Transactional
@@ -74,15 +80,16 @@ public class TransferServiceImpl implements TransferService {
 
     private void authorizeTransfer() {
         try {
-            AuthorizationResponse response = restClient.get()
+            restClient.get()
                     .uri(AUTHORIZATION_URL)
                     .retrieve()
                     .body(AuthorizationResponse.class);
 
-            if (response == null || response.getData() == null || !Boolean.TRUE.equals(response.getData().getAuthorization())) {
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
                 throw new TransferAuthorizationException("Transfer not authorized");
             }
-        } catch (HttpClientErrorException e) {
+        } catch (Exception e) {
             throw new AuthorizationServiceException("Failed to receive a valid response from the authorization service", e);
         }
     }
@@ -99,7 +106,15 @@ public class TransferServiceImpl implements TransferService {
 
             restClient.post()
                     .uri(NOTIFICATION_URL)
-                    .body(notificationRequest);
+                    .body(notificationRequest)
+                    .retrieve()
+                    .toEntity(Void.class);
+
+        } catch (HttpServerErrorException e) {
+            if (e.getStatusCode() == HttpStatus.GATEWAY_TIMEOUT) {
+                //throw new NotificationServiceException("Notification service is not available, try again later", e);
+                logger.warn("Notification service is not available, try again later: {}", e.getMessage());
+            }
         } catch (Exception e) {
             throw new NotificationServiceException("Failed to send notification to payee", e);
         }
