@@ -2,9 +2,9 @@ package com.pagamento.desafio.pagamento_simplificado.domain.services.implementat
 
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.client.ClientUpdateRequest;
 import com.pagamento.desafio.pagamento_simplificado.domain.entities.Client;
-import com.pagamento.desafio.pagamento_simplificado.domain.exceptions.client.ClientAlreadyExistsException;
 import com.pagamento.desafio.pagamento_simplificado.domain.exceptions.client.ClientNotFoundException;
 import com.pagamento.desafio.pagamento_simplificado.domain.services.ClientService;
+import com.pagamento.desafio.pagamento_simplificado.domain.validations.Validator;
 import com.pagamento.desafio.pagamento_simplificado.repositories.ClientRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,10 +18,11 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Validator<Client> clientValidator;
 
     @Override
     public Client registerClient(Client client) {
-        validateClientUniqueness(client);
+        clientValidator.validate(client);
         client.setPassword(passwordEncoder.encode(client.getPassword()));
         return clientRepository.save(client);
     }
@@ -72,14 +73,5 @@ public class ClientServiceImpl implements ClientService {
     public void deleteClient(Long id) {
         Client client = getClientById(id);
         clientRepository.delete(client);
-    }
-
-    private void validateClientUniqueness(Client client) {
-        if (clientRepository.findByEmail(client.getEmail()).isPresent()) {
-            throw new ClientAlreadyExistsException("Client with email " + client.getEmail() + " already exists.");
-        }
-        if (clientRepository.findByCpf(client.getCpf()).isPresent()) {
-            throw new ClientAlreadyExistsException("Client with CPF " + client.getCpf() + " already exists.");
-        }
     }
 }

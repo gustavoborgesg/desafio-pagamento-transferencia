@@ -2,9 +2,9 @@ package com.pagamento.desafio.pagamento_simplificado.domain.services.implementat
 
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.merchant.MerchantUpdateRequest;
 import com.pagamento.desafio.pagamento_simplificado.domain.entities.Merchant;
-import com.pagamento.desafio.pagamento_simplificado.domain.exceptions.merchant.MerchantAlreadyExistsException;
 import com.pagamento.desafio.pagamento_simplificado.domain.exceptions.merchant.MerchantNotFoundException;
 import com.pagamento.desafio.pagamento_simplificado.domain.services.MerchantService;
+import com.pagamento.desafio.pagamento_simplificado.domain.validations.Validator;
 import com.pagamento.desafio.pagamento_simplificado.repositories.MerchantRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,10 +18,11 @@ public class MerchantServiceImpl implements MerchantService {
 
     private final MerchantRepository merchantRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Validator<Merchant> merchantValidator;
 
     @Override
     public Merchant registerMerchant(Merchant merchant) {
-        validateMerchantUniqueness(merchant);
+        merchantValidator.validate(merchant);
         merchant.setPassword(passwordEncoder.encode(merchant.getPassword()));
         return merchantRepository.save(merchant);
     }
@@ -73,14 +74,5 @@ public class MerchantServiceImpl implements MerchantService {
     public void deleteMerchant(Long id) {
         Merchant merchant = getMerchantById(id);
         merchantRepository.delete(merchant);
-    }
-
-    private void validateMerchantUniqueness(Merchant merchant) {
-        if (merchantRepository.findByEmail(merchant.getEmail()).isPresent()) {
-            throw new MerchantAlreadyExistsException("Merchant with email " + merchant.getEmail() + " already exists.");
-        }
-        if (merchantRepository.findByCnpj(merchant.getCnpj()).isPresent()) {
-            throw new MerchantAlreadyExistsException("Merchant with CNPJ " + merchant.getCnpj() + " already exists.");
-        }
     }
 }

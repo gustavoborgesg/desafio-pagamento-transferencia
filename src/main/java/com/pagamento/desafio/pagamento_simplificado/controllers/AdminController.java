@@ -5,8 +5,10 @@ import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.admin.Admin
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.admin.AdminUpdateRequest;
 import com.pagamento.desafio.pagamento_simplificado.domain.entities.Admin;
 import com.pagamento.desafio.pagamento_simplificado.domain.services.AdminService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Validated
 @RestController
 @AllArgsConstructor
 @RequestMapping("/admins")
@@ -28,7 +31,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerAdmin(@RequestBody AdminRegistrationRequest adminRequest) {
+    public ResponseEntity<String> registerAdmin(@RequestBody @Valid AdminRegistrationRequest adminRequest) {
         Admin admin = mapToEntity(adminRequest);
         adminService.registerAdmin(admin);
         return ResponseEntity.ok("Admin registered successfully");
@@ -49,13 +52,13 @@ public class AdminController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AdminDefaultResponse> updateAdmin(@PathVariable Long id, @RequestBody AdminUpdateRequest adminUpdateRequest) {
+    public ResponseEntity<AdminDefaultResponse> updateAdmin(@PathVariable Long id, @RequestBody @Valid AdminUpdateRequest adminUpdateRequest) {
         Admin updatedAdmin = adminService.updateAdmin(id, mapToEntity(adminUpdateRequest));
         return ResponseEntity.ok(mapToResponse(updatedAdmin));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<AdminDefaultResponse> partialUpdateAdmin(@PathVariable Long id, @RequestBody AdminUpdateRequest adminUpdateRequest) {
+    public ResponseEntity<AdminDefaultResponse> partialUpdateAdmin(@PathVariable Long id, @RequestBody @Valid AdminUpdateRequest adminUpdateRequest) {
         Admin updatedAdmin = adminService.partialUpdateAdmin(id, adminUpdateRequest);
         return ResponseEntity.ok(mapToResponse(updatedAdmin));
     }

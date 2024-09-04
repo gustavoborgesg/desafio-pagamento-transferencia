@@ -5,8 +5,10 @@ import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.client.Clie
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.client.ClientUpdateRequest;
 import com.pagamento.desafio.pagamento_simplificado.domain.entities.Client;
 import com.pagamento.desafio.pagamento_simplificado.domain.services.ClientService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Validated
 @RestController
 @AllArgsConstructor
 @RequestMapping("/clients")
@@ -28,7 +31,7 @@ public class ClientController {
     private final ClientService clientService;
 
     @PostMapping
-    public ResponseEntity<ClientDefaultResponse> registerClient(@RequestBody ClientRegistrationRequest clientRequest) {
+    public ResponseEntity<ClientDefaultResponse> registerClient(@RequestBody @Valid ClientRegistrationRequest clientRequest) {
         Client client = mapToEntity(clientRequest);
         Client savedClient = clientService.registerClient(client);
         return ResponseEntity.ok(mapToResponse(savedClient));
@@ -49,13 +52,13 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientDefaultResponse> updateClient(@PathVariable Long id, @RequestBody ClientRegistrationRequest clientRequest) {
+    public ResponseEntity<ClientDefaultResponse> updateClient(@PathVariable Long id, @RequestBody @Valid ClientRegistrationRequest clientRequest) {
         Client updatedClient = clientService.updateClient(id, mapToEntity(clientRequest));
         return ResponseEntity.ok(mapToResponse(updatedClient));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ClientDefaultResponse> partialUpdateClient(@PathVariable Long id, @RequestBody ClientUpdateRequest clientUpdateRequest) {
+    public ResponseEntity<ClientDefaultResponse> partialUpdateClient(@PathVariable Long id, @RequestBody @Valid ClientUpdateRequest clientUpdateRequest) {
         Client updatedClient = clientService.partialUpdateClient(id, clientUpdateRequest);
         return ResponseEntity.ok(mapToResponse(updatedClient));
     }

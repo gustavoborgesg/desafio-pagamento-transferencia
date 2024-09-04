@@ -5,8 +5,10 @@ import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.merchant.Me
 import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.merchant.MerchantUpdateRequest;
 import com.pagamento.desafio.pagamento_simplificado.domain.entities.Merchant;
 import com.pagamento.desafio.pagamento_simplificado.domain.services.MerchantService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Validated
 @RestController
 @AllArgsConstructor
 @RequestMapping("/merchants")
@@ -28,7 +31,7 @@ public class MerchantController {
     private final MerchantService merchantService;
 
     @PostMapping
-    public ResponseEntity<MerchantDefaultResponse> registerMerchant(@RequestBody MerchantRegistrationRequest merchantRequest) {
+    public ResponseEntity<MerchantDefaultResponse> registerMerchant(@RequestBody @Valid MerchantRegistrationRequest merchantRequest) {
         Merchant merchant = mapToEntity(merchantRequest);
         Merchant savedMerchant = merchantService.registerMerchant(merchant);
         return ResponseEntity.ok(mapToResponse(savedMerchant));
@@ -49,13 +52,13 @@ public class MerchantController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MerchantDefaultResponse> updateMerchant(@PathVariable Long id, @RequestBody MerchantRegistrationRequest merchantRequest) {
+    public ResponseEntity<MerchantDefaultResponse> updateMerchant(@PathVariable Long id, @RequestBody @Valid MerchantRegistrationRequest merchantRequest) {
         Merchant updatedMerchant = merchantService.updateMerchant(id, mapToEntity(merchantRequest));
         return ResponseEntity.ok(mapToResponse(updatedMerchant));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<MerchantDefaultResponse> partialUpdateMerchant(@PathVariable Long id, @RequestBody MerchantUpdateRequest merchantUpdateRequest) {
+    public ResponseEntity<MerchantDefaultResponse> partialUpdateMerchant(@PathVariable Long id, @RequestBody @Valid MerchantUpdateRequest merchantUpdateRequest) {
         Merchant updatedMerchant = merchantService.partialUpdateMerchant(id, merchantUpdateRequest);
         return ResponseEntity.ok(mapToResponse(updatedMerchant));
     }
