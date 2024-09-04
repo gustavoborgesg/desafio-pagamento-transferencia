@@ -94,7 +94,7 @@ public class TransferServiceImpl implements TransferService {
         }
     }
 
-    private void notifyPayee(Transfer transfer) {
+    protected void notifyPayee(Transfer transfer) {
         try {
             String message = String.format(
                     "Received %s from %s at %s",
