@@ -5,8 +5,6 @@ import com.pagamento.desafio.pagamento_simplificado.external.dtos.NotificationRe
 import com.pagamento.desafio.pagamento_simplificado.external.exceptions.authorization.AuthorizationServiceException;
 import com.pagamento.desafio.pagamento_simplificado.external.exceptions.notification.NotificationServiceException;
 import com.pagamento.desafio.pagamento_simplificado.external.services.TransferRestClient;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +15,6 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClient;
 
 @Component
-@RequiredArgsConstructor
 public class TransferRestClientImpl implements TransferRestClient {
 
     private final RestClient restClient = RestClient.create();
