@@ -10,12 +10,34 @@ services:
       - "5432:5432"
     networks:
       - pagamento-simplificado-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Flyway Service
+  flyway:
+    image: flyway/flyway:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - pagamento-simplificado-network
+    volumes:
+      - ./src/main/resources/db/migration:/app/db/migration
+    command: -url=jdbc:postgresql://postgres:5432/${POSTGRES_DB} -user=${POSTGRES_USER} -password=${POSTGRES_PASSWORD} -locations=filesystem:/app/db/migration migrate
 
   # App service
   pagamento-simplificado:
     container_name: pagamento-simplificado-app
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      flyway:
+        condition: service_completed_successfully
     build:
       context: .
       dockerfile: Dockerfile
