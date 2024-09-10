@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "system_users")
+@Table(name = "user_accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class UserAccount {
 

@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS admin (
     cpf VARCHAR(11) NOT NULL UNIQUE,
     CONSTRAINT fk_admin_user
         FOREIGN KEY (id)
-        REFERENCES system_users(id)
+        REFERENCES user_accounts(id)
 );
 
 CREATE TABLE IF NOT EXISTS client (
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS client (
     cpf VARCHAR(11) NOT NULL UNIQUE,
     CONSTRAINT fk_client_user
         FOREIGN KEY (id)
-        REFERENCES system_users(id)
+        REFERENCES user_accounts(id)
 );
 
 CREATE TABLE IF NOT EXISTS merchant (
@@ -19,5 +19,5 @@ CREATE TABLE IF NOT EXISTS merchant (
     cnpj VARCHAR(14) NOT NULL UNIQUE,
     CONSTRAINT fk_merchant_user
         FOREIGN KEY (id)
-        REFERENCES system_users(id)
+        REFERENCES user_accounts(id)
 );

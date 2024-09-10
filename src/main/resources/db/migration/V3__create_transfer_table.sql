@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS transfer (
     status VARCHAR(50) NOT NULL,
     CONSTRAINT fk_transfer_payer
         FOREIGN KEY (payer_id)
-        REFERENCES system_users(id),
+        REFERENCES user_accounts(id),
     CONSTRAINT fk_transfer_payee
         FOREIGN KEY (payee_id)
-        REFERENCES system_users(id)
+        REFERENCES user_accounts(id)
 );
