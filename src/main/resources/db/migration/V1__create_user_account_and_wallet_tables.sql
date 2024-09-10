@@ -13,4 +13,6 @@ CREATE TABLE IF NOT EXISTS user_accounts (
     CONSTRAINT fk_wallet
         FOREIGN KEY (wallet_id)
         REFERENCES wallet(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );

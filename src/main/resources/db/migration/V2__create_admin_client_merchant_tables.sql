@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS admin (
     CONSTRAINT fk_admin_user
         FOREIGN KEY (id)
         REFERENCES user_accounts(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS client (
@@ -12,6 +14,8 @@ CREATE TABLE IF NOT EXISTS client (
     CONSTRAINT fk_client_user
         FOREIGN KEY (id)
         REFERENCES user_accounts(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS merchant (
@@ -20,4 +24,10 @@ CREATE TABLE IF NOT EXISTS merchant (
     CONSTRAINT fk_merchant_user
         FOREIGN KEY (id)
         REFERENCES user_accounts(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
+
+CREATE INDEX idx_admin_cpf ON admin (cpf);
+CREATE INDEX idx_client_cpf ON client (cpf);
+CREATE INDEX idx_merchant_cnpj ON merchant (cnpj);
