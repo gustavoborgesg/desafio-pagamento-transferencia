@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -16,6 +18,8 @@ import org.springframework.web.client.RestClient;
 
 @Component
 public class TransferRestClientImpl implements TransferRestClient {
+    //ToDo: Substitute the RestClient + SpringRetry approach to a messaging solution,
+    // which will more elegantly do the requests and threat better possible communication errors.
 
     private final RestClient restClient = RestClient.create();
     private static final Logger logger = LoggerFactory.getLogger(TransferRestClientImpl.class);
@@ -27,6 +31,7 @@ public class TransferRestClientImpl implements TransferRestClient {
     private String notificationUrl;
 
     @Override
+    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = 1000, multiplier = 1.2))
     public void authorizeTransfer() {
         try {
             restClient.get()
@@ -44,6 +49,7 @@ public class TransferRestClientImpl implements TransferRestClient {
     }
 
     @Override
+    @Retryable(maxAttempts = 5, backoff = @Backoff(delay = 1000, multiplier = 1.2))
     public void notifyPayee(NotificationRequest notificationRequest) {
         try {
             restClient.post()
