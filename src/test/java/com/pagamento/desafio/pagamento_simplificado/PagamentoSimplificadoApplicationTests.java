@@ -7,28 +7,19 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
-class PagamentoSimplificadoApplicationTests {
+class PagamentoSimplificadoApplicationTests extends BaseIntegrationTest {
     private static final PostgreSQLContainer<?> postgreSQLContainer = BaseIntegrationTest.getInstance();
-    private static final String AUTHORIZATION_URL = "https://test-authorization-url.com";
-    private static final String NOTIFICATION_URL = "https://test-notification-url.com";
-
-    @BeforeAll
-    public static void startContainer() {
-        postgreSQLContainer.start();
-    }
-
-    @DynamicPropertySource
-    static void registerDatabaseProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-
-        registry.add("AUTHORIZATION_URL", () -> AUTHORIZATION_URL);
-        registry.add("NOTIFICATION_URL", () -> NOTIFICATION_URL);
-    }
 
     @Test
     void contextLoads() {
+    }
+
+    @Test
+    void connectionEstablished() {
+        assertThat(postgreSQLContainer.isCreated()).isTrue();
+        assertThat(postgreSQLContainer.isRunning()).isTrue();
     }
 }
