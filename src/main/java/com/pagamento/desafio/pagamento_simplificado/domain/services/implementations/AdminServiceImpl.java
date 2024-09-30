@@ -7,7 +7,6 @@ import com.pagamento.desafio.pagamento_simplificado.domain.exceptions.admin.Admi
 import com.pagamento.desafio.pagamento_simplificado.domain.services.AdminService;
 import com.pagamento.desafio.pagamento_simplificado.domain.validations.Validator;
 import com.pagamento.desafio.pagamento_simplificado.domain.validations.admin.AdminEmailValidator;
-import com.pagamento.desafio.pagamento_simplificado.domain.validations.admin.AdminValidator;
 import com.pagamento.desafio.pagamento_simplificado.repositories.AdminRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +20,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AdminValidator adminValidator;
+    private final Validator<Admin> adminValidator;
     private final AdminEmailValidator adminEmailValidator;
 
     @Override
