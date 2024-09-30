@@ -7,10 +7,12 @@ import com.pagamento.desafio.pagamento_simplificado.controllers.dtos.admin.Admin
 import com.pagamento.desafio.pagamento_simplificado.domain.entities.Admin;
 import com.pagamento.desafio.pagamento_simplificado.repositories.AdminRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -41,29 +43,25 @@ public class AdminControllerIT extends BaseIntegrationTest {
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        // Limpar o banco de dados antes de cada teste para garantir isolamento
         adminRepository.deleteAll();
     }
 
-    // Testes de Registro
     @Test
+    @DisplayName("Should successfully register a new Admin")
     public void testRegisterAdmin_Success() throws Exception {
-        // ARRANGE
         AdminRegistrationRequest adminRequest = new AdminRegistrationRequest();
-        adminRequest.setCpf("12345678902");  // CPF único para este teste
+        adminRequest.setCpf("12345678902");
         adminRequest.setName("Admin User");
-        adminRequest.setEmail("admin2@test.com");  // E-mail único
+        adminRequest.setEmail("admin2@test.com");
         adminRequest.setPassword("admin123");
 
         String jsonRequest = objectMapper.writeValueAsString(adminRequest);
 
-        // ACT
         mockMvc.perform(post("/admins/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isOk());
 
-        // ASSERT
         Admin savedAdmin = adminRepository.findByEmail("admin2@test.com").orElse(null);
         assertThat(savedAdmin).isNotNull();
         assertThat(savedAdmin.getCpf()).isEqualTo("12345678902");
@@ -72,8 +70,8 @@ public class AdminControllerIT extends BaseIntegrationTest {
     }
 
     @Test
+    @DisplayName("Should return conflict when registering Admin with duplicate email")
     public void testRegisterAdmin_Failure_DuplicateEmail() throws Exception {
-        // ARRANGE
         Admin existingAdmin = new Admin();
         existingAdmin.setCpf("12345678901");
         existingAdmin.setName("Admin User");
@@ -82,27 +80,25 @@ public class AdminControllerIT extends BaseIntegrationTest {
         adminRepository.save(existingAdmin);
 
         AdminRegistrationRequest adminRequest = new AdminRegistrationRequest();
-        adminRequest.setCpf("12345678902");  // CPF diferente, mas e-mail duplicado
+        adminRequest.setCpf("12345678902");
         adminRequest.setName("Another Admin");
-        adminRequest.setEmail("admin@test.com");  // E-mail duplicado
+        adminRequest.setEmail("admin@test.com");
         adminRequest.setPassword("admin123");
 
         String jsonRequest = objectMapper.writeValueAsString(adminRequest);
 
-        // ACT
         mockMvc.perform(post("/admins/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
-                .andExpect(status().isConflict());  // Espera-se um conflito (409)
+                .andExpect(status().isConflict());
 
-        // ASSERT
         Admin duplicateAdmin = adminRepository.findByCpf("12345678902").orElse(null);
-        assertThat(duplicateAdmin).isNull();  // O admin com CPF novo não deve ser registrado
+        assertThat(duplicateAdmin).isNull();
     }
 
     @Test
+    @DisplayName("Should return conflict when registering Admin with duplicate CPF")
     public void testRegisterAdmin_Failure_DuplicateCpf() throws Exception {
-        // ARRANGE
         Admin existingAdmin = new Admin();
         existingAdmin.setCpf("12345678901");
         existingAdmin.setName("Admin User");
@@ -111,28 +107,25 @@ public class AdminControllerIT extends BaseIntegrationTest {
         adminRepository.save(existingAdmin);
 
         AdminRegistrationRequest adminRequest = new AdminRegistrationRequest();
-        adminRequest.setCpf("12345678901");  // CPF duplicado
+        adminRequest.setCpf("12345678901");
         adminRequest.setName("Another Admin");
-        adminRequest.setEmail("admin2@test.com");  // E-mail diferente
+        adminRequest.setEmail("admin2@test.com");
         adminRequest.setPassword("admin123");
 
         String jsonRequest = objectMapper.writeValueAsString(adminRequest);
 
-        // ACT
         mockMvc.perform(post("/admins/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
-                .andExpect(status().isConflict());  // Espera-se um conflito (409)
+                .andExpect(status().isConflict());
 
-        // ASSERT
         Admin duplicateAdmin = adminRepository.findByEmail("admin2@test.com").orElse(null);
-        assertThat(duplicateAdmin).isNull();  // O admin com o e-mail novo não deve ser registrado
+        assertThat(duplicateAdmin).isNull();
     }
 
-    // Testes de Consulta (GET)
     @Test
+    @DisplayName("Should successfully retrieve Admin by ID")
     public void testGetAdminById_Success() throws Exception {
-        // ARRANGE
         Admin admin = new Admin();
         admin.setCpf("12345678901");
         admin.setName("Admin User");
@@ -140,24 +133,22 @@ public class AdminControllerIT extends BaseIntegrationTest {
         admin.setPassword("admin123");
         admin = adminRepository.save(admin);
 
-        // ACT & ASSERT
         mockMvc.perform(get("/admins/{id}", admin.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @DisplayName("Should return 404 when Admin ID not found")
     public void testGetAdminById_Failure_NotFound() throws Exception {
-        // ACT & ASSERT
-        mockMvc.perform(get("/admins/{id}", 999L)  // ID inexistente
+        mockMvc.perform(get("/admins/{id}", 999L)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());  // Espera-se um 404 Not Found
+                .andExpect(status().isNotFound());
     }
 
-    // Testes de Atualização (PUT)
     @Test
+    @DisplayName("Should successfully update an Admin's details")
     public void testUpdateAdmin_Success() throws Exception {
-        // ARRANGE
         Admin admin = new Admin();
         admin.setCpf("12345678901");
         admin.setName("Admin User");
@@ -171,13 +162,11 @@ public class AdminControllerIT extends BaseIntegrationTest {
 
         String jsonRequest = objectMapper.writeValueAsString(updateRequest);
 
-        // ACT
         mockMvc.perform(put("/admins/{id}", admin.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isOk());
 
-        // ASSERT
         Admin updatedAdmin = adminRepository.findById(admin.getId()).orElse(null);
         assertThat(updatedAdmin).isNotNull();
         assertThat(updatedAdmin.getName()).isEqualTo("Updated Admin");
@@ -185,8 +174,8 @@ public class AdminControllerIT extends BaseIntegrationTest {
     }
 
     @Test
+    @DisplayName("Should return conflict when updating Admin with duplicate email")
     public void testUpdateAdmin_Failure_DuplicateEmail() throws Exception {
-        // ARRANGE
         Admin admin1 = new Admin();
         admin1.setCpf("12345678901");
         admin1.setName("Admin One");
@@ -202,21 +191,19 @@ public class AdminControllerIT extends BaseIntegrationTest {
         admin2 = adminRepository.save(admin2);
 
         AdminUpdateRequest updateRequest = new AdminUpdateRequest();
-        updateRequest.setEmail("admin1@test.com");  // Tentar atualizar para e-mail duplicado
+        updateRequest.setEmail("admin1@test.com");
 
         String jsonRequest = objectMapper.writeValueAsString(updateRequest);
 
-        // ACT
         mockMvc.perform(put("/admins/{id}", admin2.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
-                .andExpect(status().isConflict());  // Espera-se um conflito (409)
+                .andExpect(status().isConflict());
     }
 
-    // Testes de Deleção (DELETE)
     @Test
+    @DisplayName("Should successfully delete Admin")
     public void testDeleteAdmin_Success() throws Exception {
-        // ARRANGE
         Admin admin = new Admin();
         admin.setCpf("12345678901");
         admin.setName("Admin User");
@@ -224,7 +211,6 @@ public class AdminControllerIT extends BaseIntegrationTest {
         admin.setPassword("admin123");
         admin = adminRepository.save(admin);
 
-        // ACT & ASSERT
         mockMvc.perform(delete("/admins/{id}", admin.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -234,10 +220,10 @@ public class AdminControllerIT extends BaseIntegrationTest {
     }
 
     @Test
+    @DisplayName("Should return 404 when deleting non-existent Admin")
     public void testDeleteAdmin_Failure_NotFound() throws Exception {
-        // ACT & ASSERT
-        mockMvc.perform(delete("/admins/{id}", 999L)  // ID inexistente
+        mockMvc.perform(delete("/admins/{id}", 999L)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());  // Espera-se um 404 Not Found
+                .andExpect(status().isNotFound());
     }
 }

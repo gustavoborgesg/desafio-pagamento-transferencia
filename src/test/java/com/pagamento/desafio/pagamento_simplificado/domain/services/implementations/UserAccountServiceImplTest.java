@@ -49,7 +49,7 @@ class UserAccountServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve depositar com sucesso na carteira do usuário")
+    @DisplayName("Should successfully deposit to user's wallet")
     void depositToWallet_Success() {
         // Arrange
         when(userAccountRepository.findById(userAccount.getId())).thenReturn(Optional.of(userAccount));
@@ -64,7 +64,7 @@ class UserAccountServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando o usuário não for encontrado")
+    @DisplayName("Should throw exception when user is not found")
     void depositToWallet_Failure_UserNotFound() {
         // Arrange
         when(userAccountRepository.findById(anyLong())).thenReturn(Optional.empty());

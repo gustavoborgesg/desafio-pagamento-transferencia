@@ -57,7 +57,7 @@ class MerchantServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve registrar merchant com sucesso")
+    @DisplayName("Should register merchant successfully")
     void registerMerchant_Success() {
         // Arrange
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
@@ -73,7 +73,7 @@ class MerchantServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando a validação do merchant falhar ao registrar merchant")
+    @DisplayName("Should throw exception when merchant validation fails during registration")
     void registerMerchant_Failure_ValidationError() {
         // Arrange
         doThrow(new RuntimeException("Validation error")).when(merchantValidator).validate(any(Merchant.class));
@@ -84,7 +84,7 @@ class MerchantServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve obter merchant pelo ID com sucesso")
+    @DisplayName("Should get merchant by ID successfully")
     void getMerchantById_Success() {
         // Arrange
         when(merchantRepository.findById(anyLong())).thenReturn(Optional.of(merchant));
@@ -98,7 +98,7 @@ class MerchantServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando merchant não for encontrado pelo ID")
+    @DisplayName("Should throw exception when merchant is not found by ID")
     void getMerchantById_Failure_NotFound() {
         // Arrange
         when(merchantRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -108,7 +108,7 @@ class MerchantServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve listar todos os merchants com sucesso")
+    @DisplayName("Should return all merchants successfully")
     void getAllMerchants_Success() {
         // Arrange
         when(merchantRepository.findAll()).thenReturn(List.of(merchant));
@@ -122,7 +122,7 @@ class MerchantServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve retornar uma lista vazia quando não houver merchants")
+    @DisplayName("Should return an empty list when no merchants exist")
     void getAllMerchants_EmptyList() {
         // Arrange
         when(merchantRepository.findAll()).thenReturn(List.of());
@@ -136,7 +136,7 @@ class MerchantServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve atualizar merchant com sucesso")
+    @DisplayName("Should update merchant successfully")
     void updateMerchant_Success() {
         // Arrange
         Merchant updatedMerchant = new Merchant();
@@ -159,7 +159,7 @@ class MerchantServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao atualizar merchant com falha")
+    @DisplayName("Should throw exception when merchant update fails")
     void updateMerchant_Failure() {
         // Arrange
         when(merchantRepository.findById(anyLong())).thenReturn(Optional.of(merchant));
@@ -170,7 +170,7 @@ class MerchantServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve deletar merchant com sucesso")
+    @DisplayName("Should delete merchant successfully")
     void deleteMerchant_Success() {
         // Arrange
         when(merchantRepository.findById(anyLong())).thenReturn(Optional.of(merchant));
@@ -183,7 +183,7 @@ class MerchantServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao deletar merchant que não existe")
+    @DisplayName("Should throw exception when deleting a non-existing merchant")
     void deleteMerchant_Failure_MerchantNotFound() {
         // Arrange
         when(merchantRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -194,7 +194,7 @@ class MerchantServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao deletar merchant com falha")
+    @DisplayName("Should throw exception when merchant deletion fails")
     void deleteMerchant_Failure() {
         // Arrange
         when(merchantRepository.findById(anyLong())).thenReturn(Optional.of(merchant));

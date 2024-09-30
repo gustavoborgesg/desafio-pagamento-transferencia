@@ -57,7 +57,7 @@ class ClientServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve registrar client com sucesso")
+    @DisplayName("Should register client successfully")
     void registerClient_Success() {
         // Arrange
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
@@ -73,7 +73,7 @@ class ClientServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando o validador de client falhar ao registrar client")
+    @DisplayName("Should throw exception when client validation fails during registration")
     void registerClient_Failure_ValidationError() {
         // Arrange
         doThrow(new RuntimeException("Validation error")).when(clientValidator).validate(any(Client.class));
@@ -84,7 +84,7 @@ class ClientServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve obter client pelo ID com sucesso")
+    @DisplayName("Should get client by ID successfully")
     void getClientById_Success() {
         // Arrange
         when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
@@ -98,7 +98,7 @@ class ClientServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando client não for encontrado pelo ID")
+    @DisplayName("Should throw exception when client is not found by ID")
     void getClientById_Failure_NotFound() {
         // Arrange
         when(clientRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -108,7 +108,7 @@ class ClientServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve listar todos os clients com sucesso")
+    @DisplayName("Should return all clients successfully")
     void getAllClients_Success() {
         // Arrange
         when(clientRepository.findAll()).thenReturn(List.of(client));
@@ -122,7 +122,7 @@ class ClientServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve retornar uma lista vazia quando não houver clients")
+    @DisplayName("Should return an empty list when no clients exist")
     void getAllClients_EmptyList() {
         // Arrange
         when(clientRepository.findAll()).thenReturn(List.of());
@@ -136,7 +136,7 @@ class ClientServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve atualizar client com sucesso")
+    @DisplayName("Should update client successfully")
     void updateClient_Success() {
         // Arrange
         Client updatedClient = new Client();
@@ -159,7 +159,7 @@ class ClientServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao atualizar client com falha")
+    @DisplayName("Should throw exception when client update fails")
     void updateClient_Failure() {
         // Arrange
         when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
@@ -170,7 +170,7 @@ class ClientServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve deletar client com sucesso")
+    @DisplayName("Should delete client successfully")
     void deleteClient_Success() {
         // Arrange
         when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
@@ -183,7 +183,7 @@ class ClientServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao deletar client que não existe")
+    @DisplayName("Should throw exception when client to be deleted is not found")
     void deleteClient_Failure_ClientNotFound() {
         // Arrange
         when(clientRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -194,7 +194,7 @@ class ClientServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao deletar client com falha")
+    @DisplayName("Should throw exception when client deletion fails")
     void deleteClient_Failure() {
         // Arrange
         when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));

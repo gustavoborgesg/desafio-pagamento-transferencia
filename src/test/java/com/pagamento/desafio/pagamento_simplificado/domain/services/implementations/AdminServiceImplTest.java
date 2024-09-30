@@ -59,7 +59,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve registrar admin com sucesso")
+    @DisplayName("Should register admin successfully")
     void registerAdmin_Success() {
         // Arrange
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
@@ -75,10 +75,11 @@ class AdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando o e-mail já existir ao registrar admin")
+    @DisplayName("Should throw exception when email already exists during admin registration")
     void registerAdmin_Failure_EmailAlreadyExists() {
         // Arrange
-        doThrow(new AdminAlreadyExistsException("Admin with email already exists")).when(adminValidator).validate(any(Admin.class));
+        doThrow(new AdminAlreadyExistsException("Admin with email already exists"))
+                .when(adminValidator).validate(any(Admin.class));
 
         // Act & Assert
         assertThrows(AdminAlreadyExistsException.class, () -> adminService.registerAdmin(admin));
@@ -88,10 +89,11 @@ class AdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando o CPF já existir ao registrar admin")
+    @DisplayName("Should throw exception when CPF already exists during admin registration")
     void registerAdmin_Failure_CpfAlreadyExists() {
         // Arrange
-        doThrow(new AdminAlreadyExistsException("Admin with CPF already exists")).when(adminValidator).validate(any(Admin.class));
+        doThrow(new AdminAlreadyExistsException("Admin with CPF already exists"))
+                .when(adminValidator).validate(any(Admin.class));
 
         // Act & Assert
         assertThrows(AdminAlreadyExistsException.class, () -> adminService.registerAdmin(admin));
@@ -101,7 +103,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve obter admin pelo ID com sucesso")
+    @DisplayName("Should get admin by ID successfully")
     void getAdminById_Success() {
         // Arrange
         when(adminRepository.findById(anyLong())).thenReturn(Optional.of(admin));
@@ -115,7 +117,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando admin não for encontrado pelo ID")
+    @DisplayName("Should throw exception when admin is not found by ID")
     void getAdminById_Failure_NotFound() {
         // Arrange
         when(adminRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -125,7 +127,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve listar todos os admins com sucesso")
+    @DisplayName("Should return all admins successfully")
     void getAllAdmins_Success() {
         // Arrange
         when(adminRepository.findAll()).thenReturn(List.of(admin));
@@ -139,7 +141,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve retornar uma lista vazia quando não houver admins")
+    @DisplayName("Should return empty list when no admins exist")
     void getAllAdmins_EmptyList() {
         // Arrange
         when(adminRepository.findAll()).thenReturn(List.of());
@@ -153,7 +155,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve atualizar admin com sucesso")
+    @DisplayName("Should update admin successfully")
     void updateAdmin_Success() {
         // Arrange
         Admin updatedAdmin = new Admin();
@@ -175,7 +177,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao atualizar admin com falha")
+    @DisplayName("Should throw exception when admin update fails")
     void updateAdmin_Failure() {
         // Arrange
         when(adminRepository.findById(anyLong())).thenReturn(Optional.of(admin));
@@ -186,7 +188,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve deletar admin com sucesso")
+    @DisplayName("Should delete admin successfully")
     void deleteAdmin_Success() {
         // Arrange
         when(adminRepository.findById(anyLong())).thenReturn(Optional.of(admin));
@@ -199,7 +201,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao deletar admin que não existe")
+    @DisplayName("Should throw exception when admin to be deleted is not found")
     void deleteAdmin_Failure_AdminNotFound() {
         // Arrange
         when(adminRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -210,7 +212,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao deletar admin com falha")
+    @DisplayName("Should throw exception when admin deletion fails")
     void deleteAdmin_Failure() {
         // Arrange
         when(adminRepository.findById(anyLong())).thenReturn(Optional.of(admin));

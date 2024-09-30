@@ -93,7 +93,7 @@ class TransferServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve executar transferência com sucesso")
+    @DisplayName("Should successfully execute transfer")
     void executeTransfer_Success() {
         // Arrange
         when(userAccountRepository.findById(payer.getId())).thenReturn(Optional.of(payer));
@@ -118,7 +118,7 @@ class TransferServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando o pagador não for encontrado")
+    @DisplayName("Should throw exception when payer not found")
     void executeTransfer_Failure_PayerNotFound() {
         // Arrange
         when(userAccountRepository.findById(payer.getId())).thenReturn(Optional.empty());
@@ -129,7 +129,7 @@ class TransferServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando o recebedor não for encontrado")
+    @DisplayName("Should throw exception when payee not found")
     void executeTransfer_Failure_PayeeNotFound() {
         // Arrange
         when(userAccountRepository.findById(payer.getId())).thenReturn(Optional.of(payer));
@@ -141,7 +141,7 @@ class TransferServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando o pagador for um Merchant")
+    @DisplayName("Should throw exception when payer is a Merchant")
     void executeTransfer_Failure_PayerIsMerchant() {
         // Arrange
         payer.setRole("ROLE_MERCHANT");
@@ -155,7 +155,7 @@ class TransferServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando saldo insuficiente")
+    @DisplayName("Should throw exception when insufficient balance")
     void executeTransfer_Failure_InsufficientBalance() {
         // Arrange
         payer.getWallet().debit(new BigDecimal("90.00"));
@@ -167,7 +167,7 @@ class TransferServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve obter transferência por ID com sucesso")
+    @DisplayName("Should get transfer by ID successfully")
     void getTransferById_Success() {
         // Arrange
         when(transferRepository.findById(anyLong())).thenReturn(Optional.of(transfer));
@@ -182,7 +182,7 @@ class TransferServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando a transferência não for encontrada por ID")
+    @DisplayName("Should throw exception when transfer not found by ID")
     void getTransferById_Failure_TransferNotFound() {
         // Arrange
         when(transferRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -193,7 +193,7 @@ class TransferServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve listar todas as transferências com sucesso")
+    @DisplayName("Should list all transfers successfully")
     void getAllTransfers_Success() {
         // Arrange
         when(transferRepository.findAll()).thenReturn(List.of(transfer));
@@ -209,7 +209,7 @@ class TransferServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve retornar lista vazia quando não houver transferências")
+    @DisplayName("Should return empty list when no transfers")
     void getAllTransfers_EmptyList() {
         // Arrange
         when(transferRepository.findAll()).thenReturn(List.of());
