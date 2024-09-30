@@ -5,6 +5,6 @@ import org.springframework.http.HttpStatus;
 
 public class AuthorizationServiceException extends CustomException {
     public AuthorizationServiceException(String message, Throwable cause) {
-        super(message, cause, "TRANSFER_SERVICE_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+        super(message, cause, "TRANSFER_SERVICE_ERROR", HttpStatus.FORBIDDEN);
     }
 }
